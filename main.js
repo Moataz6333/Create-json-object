@@ -39,34 +39,38 @@ container.appendChild(field_div);
 
 }
 //function to make chapters content
-function makeContent_for_Chapter(){
+function makeContent_for_Chapter(n){
+  for(let i=0;i<n;i++){
+    let h2_1=document.createElement("h2");
+    let h2_2=document.createElement("h2");
+    h2_1.textContent=`The Header Of The Chapter ${i+1} : `;
+    h2_2.textContent=`The Story Of The Chapter ${i+1} : `;
+    let Header_field= document.createElement("textarea");
+    Header_field.className="headers";
+    let Story_field= document.createElement("textarea");
+    Story_field.className="storyContent";
+    Header_field.rows=4;
+    Header_field.cols=50;
+    Header_field.dir="rtl";
+    Header_field.id="Header_field";
+  
+    Story_field.rows=4;
+    Story_field.cols=50;
+    Story_field.dir="rtl";
+    Story_field.id="Story_field";
+   
+    let div = document.createElement("div");
+  
+    div.appendChild(h2_1); 
+    div.appendChild(Header_field);
+  
+    div.appendChild(h2_2);
+    div.appendChild(Story_field);
+  
+    container.appendChild(div);
+  }
 
   
-  let h2_1=document.createElement("h2");
-  let h2_2=document.createElement("h2");
-  h2_1.textContent=`The Header Of The Chapter : `;
-  h2_2.textContent=`The Story Of The Chapter : `;
-  let Header_field= document.createElement("textarea");
-  let Story_field= document.createElement("textarea");
-  Header_field.rows=4;
-  Header_field.cols=50;
-  Header_field.dir="rtl";
-  Header_field.id="Header_field";
-
-  Story_field.rows=4;
-  Story_field.cols=50;
-  Story_field.dir="rtl";
-  Story_field.id="Story_field";
- 
-  let div = document.createElement("div");
-
-  div.appendChild(h2_1); 
-  div.appendChild(Header_field);
-
-  div.appendChild(h2_2);
-  div.appendChild(Story_field);
-
-  container.appendChild(div);
 
 
  
@@ -76,6 +80,7 @@ function makeContent_for_Chapter(){
 }
 let n=0; //the number of stroy
 let flag=1;
+let no_of_chapters_he_will_add=0;
 
 let jsonStr ="";//the result
 
@@ -94,20 +99,16 @@ let jsonStr ="";//the result
         jsonStr =JSON.stringify(obj); //the obj string
 
         }else{
-          let Header =Header_field.value;
-        let story=Story_field.value;
+          jsonStr=createChapters(n,no_of_chapters_he_will_add);
 
 
         //create the obj
         //n=1
-        obj2[`${n}n`]=Header;
-        obj2[`${n}s`]=story;
-        jsonStr =JSON.stringify(obj2); //the obj string
+       
 
         }
         
        
-      console.log(jsonStr);
       submit.style.display="none";
 
       container.style.display="none";
@@ -156,11 +157,50 @@ let jsonStr ="";//the result
 
 
   });
-  let n_input =document.getElementById("n");
+  
+
+
+ //the function to create the json
+ function createChapters(storyId,no_of_chapters){
+ 
+   let headers =document.querySelectorAll(".headers");
+   let storyContent=document.querySelectorAll(".storyContent");
+   
+  let jsonOfChapters="";
+  for(let i=0;i<no_of_chapters;i++){
+    obj2[`${storyId}n`]=headers[i].value;
+    obj2[`${storyId}s`]=storyContent[i].value;
+jsonOfChapters=jsonOfChapters+JSON.stringify(obj2)+",";
+  }
+  jsonOfChapters=jsonOfChapters.substring(0,jsonOfChapters.length-1);
+  return jsonOfChapters;
+
+ }
+
+ let n_input =document.getElementById("n");
   let Okbtn=document.getElementById("ok_btn");
+  let h1Text =document.getElementById("h1Text");
+  // ////
+    //takes the number of chapters he will add
+ let nOfChapters = document.getElementById("nOfChapters");//inp
+ let ok_btn2 =document.getElementById("ok_btn2");//btn2
+
+// //////////////////
   Okbtn.addEventListener("click",function(){
      n=n_input.value;
-    makeContent_for_Chapter();
+     n_input.style.display="none"
+     Okbtn.style.display="none";
+     h1Text.textContent="Enter the no. of Chapters you'll add";
+    
+     nOfChapters.style.display="block";
+     ok_btn2.style.display="block";
+
+   
+  });
+  ok_btn2.addEventListener("click",function(){
+    no_of_chapters_he_will_add=nOfChapters.value;
+
+    makeContent_for_Chapter(no_of_chapters_he_will_add);
     startDiv.style.display="none";
     container.style.display="flex";
     flag=1;
